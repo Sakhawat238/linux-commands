@@ -13,8 +13,77 @@
             (which usually begin with a hyphen - or double hyphen -- characters), and arguments. 
             Each word that is typed into the shell is separated from other words with spaces.
         </p>
-
-        
+        <code>whoami</code>
+        <p>
+            To type more than one command on a single line, use the semicolon (;) as a command separator. 
+            A semicolon is a member of a class of characters called metacharacters that have a special interpretation for bash. 
+        </p>
+        <p>
+            The date command displays the current date and time.
+        </p>
+        <code>date</code></br>
+        <code>date +%x</code>
+        <p>The passwd command with no options changes the current user's password.</p>
+        <code>passwd</code>
+        <p>
+            Linux does not require file name extensions to classify files by type. 
+            The file command scans the compiled header of a file for a 2-digit magic number and displays its type.
+        </p>
+        <code>file /etc/passwd</code></br>
+        <code>file /bin/passwd</code></br>
+        <code>file /home</code>
+        <p>
+            The cat command is often used in Linux. Use this command to create single or multiple files, view the contents of files, 
+            concatenate the contents from various files, and redirect contents of the file to a terminal or to files.
+        </p>
+        <code>cat /etc/passwd</code></br>
+        <code>cat file1 file2</code>
+        <p>
+            The cat command does not display the contents of a file as pages. 
+            The less command displays one page of a file at a time and you can scroll at your leisure.
+        </p>
+        <p>
+            The head and tail commands display the beginning and the end of a file, respectively. 
+            By default, these commands display 10 lines of the file, but they both have a -n option to specify a different number of lines.
+        </p>
+        <code>head /etc/passwd</code><br>
+        <code>tail -n 3 /etc/passwd</code>
+        <p>
+            The wc command counts lines, words, and characters in a file. 
+            Use the -l, -w, or -c options to display only the given number of lines, words, or characters, respectively.
+        </p>
+        <code>wc /etc/passwd</code><br>
+        <code>wc -l /etc/passwd ; wc -l /etc/group</code><br>
+        <code>wc -c /etc/group /etc/hosts</code>
+        <p>
+            With tab completion, users can quickly complete commands or file names after typing enough at the prompt to make it unique. 
+            If the typed characters are not unique, then pressing the Tab key twice displays all commands that begin with the typed characters.
+        </p>
+        <p>
+            Use the useradd command to create users on the system. The useradd command has many options that might be hard to remember. 
+            By using tab completion, you can complete the option name with minimal typing.
+        </p>
+        <p>
+            To write one command in more than one line, use a backslash character (\), which is referred to as the escape character. 
+            The backslash character ignores the meaning of the following character.
+        </p>
+        <p>
+            The history command displays a list of previously executed commands that are prefixed with a command number.
+        </p>
+        <code>history</code>
+        <p>
+            The exclamation point character (!) is a metacharacter to expand previous commands without retyping them. 
+            The !number command expands to the command that matches the specified number. 
+            The !string command expands to the most recent command that begins with the specified string.
+        </p>
+        <p>
+            The Alt+. key combination is particularly convenient, 
+            because you can hold down Alt and press . repeatedly to quickly cycle earlier commands.
+        </p>
+        <p>
+            Ctrl+A	Jump to the beginning of the command line.
+            Ctrl+E	Jump to the end of the command line.
+        </p>
     </div>
 </body>
 </html>
