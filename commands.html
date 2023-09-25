@@ -261,6 +261,26 @@
             we can quote and escape characters and strings. The backslash (\) is an escape character in the Bash shell. 
             To protect longer character strings, we can use single quotation marks (') or double quotation marks (") to enclose strings.
         </p>
+        <p>
+            One source of documentation that is generally available on the local system is system manual pages or man pages. 
+            The pages are stored in subdirectories of the /usr/share/man directory. To read specific man pages, use the man topic command. 
+            To display the man page topic from a specific section, you can use the man section topic command.
+        </p>
+        <code>man passwd</code><br>
+        <code>man 5 passwd</code>
+        <p>
+            Popular system administration topics are in sections 1 (user commands), 5 (file formats), and 8 (administrative commands). 
+            Administrators who use certain troubleshooting tools also use section 2 (system calls). 
+        </p>
+        <p>
+            Use the man command -k option (equivalent to the apropos command) to search for a keyword in man page titles and descriptions. 
+        </p>
+        <code>man -k passwd</code>
+        <p>
+            The man command -K (uppercase) option searches for the keyword in the full-text page, not only in the titles and descriptions. 
+            A full-text search uses greater system resources and takes more time.
+        </p>
+        <code>man -K passwd</code>
     </div>
 </body>
 </html>
