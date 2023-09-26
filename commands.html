@@ -281,6 +281,164 @@
             A full-text search uses greater system resources and takes more time.
         </p>
         <code>man -K passwd</code>
+        <p>
+            A running program, or process, reads input and writes output. A process uses numbered channels called file descriptors to get input and send output. 
+            All processes start with at least three file descriptors. Standard input (channel 0) reads input from the keyboard. 
+            Standard output (channel 1) sends normal output to the terminal. Standard error (channel 2) sends error messages to the terminal.
+            If a program opens separate connections to other files, then it might use higher-numbered file descriptors.
+        </p>
+        <img src="./images/0004.png" alt="img" width="50%" />
+        <ul>
+            <li><code>> file</code> Redirect stdout to overwrite a file</li>
+            <li><code>>> file</code> Redirect stdout to append to a file</li>
+            <li><code>2> file</code> Redirect stderr to overwrite a file</li>
+            <li><code>2> /dev/null</code> Discard stderr error messages by redirecting them to /dev/null</li>
+            <li><code>> file 2>&1</code> Redirect stdout and stderr to overwrite the same file</li>
+            <li><code>>> file 2>&1</code> Redirect stdout and stderr to append to the same file</li>
+        </ul>
+        <p>
+            A pipeline is a sequence of one or more commands that are separated by the vertical bar character (|). 
+            A pipeline connects the standard output of the first command to the standard input of the next command.
+        </p>
+        <p>
+            When we combine redirection with a pipeline, the shell sets up the entire pipeline first, and then it redirects the input/output. 
+            If you use output redirection in the middle of a pipeline, then the output goes to the file and not to the next command in the pipeline.
+        </p>
+        <p>
+            In the next example, the output of the ls command goes to the /tmp/saved-output file, and the less command displays nothing on the terminal.
+        </p>
+        <code>ls > /tmp/saved-output | less</code>
+        <p>
+            The tee command overcomes this limitation. In a pipeline, tee copies its standard input to its standard output and also redirects its standard output to the files that are given as arguments to the command. 
+            If we imagine data as water that flows through a pipeline, then we can visualize tee as a "T" joint in the pipe that directs output in two directions.
+        </p>
+        <p>
+            The next example redirects the output of the ls command to the /tmp/saved-output file and passes it to the less command, so it is displayed on the terminal one screen at a time.
+        </p>
+        <code>ls -l | tee /tmp/saved-output | less</code>
+        <p>
+            If we use the tee command at the end of a pipeline, then the terminal shows the output of the commands in the pipeline and saves it to a file at the same time.
+        </p>
+        <code>ls -t | head -n 10 | tee /tmp/ten-last-changed-files</code>
+        <p>
+            Use the tee command -a option to append the content to a file instead of overwriting it.
+        </p>
+        <code>ls -l | tee -a /tmp/append-files</code>
+        <p>
+            The fundamental design principle of Linux is that it supports storage of the information and configuration settings in text-based files. 
+            These files follow various structures such as lists of settings, INI-like formats, structured XML or YAML, and others. 
+            The advantage of storing files in a text-based structure is that they are edited with any text editor.
+        </p>
+        <p>
+            Vim is an improved version of the vi editor, which is distributed with Linux and UNIX systems. Vim is a highly configurable and efficient editor that provides split-screen editing, color formatting, and highlighting for editing text.
+        </p>
+        <p>
+            The Vim editor offers various modes of operation such as command mode, extended command mode, edit mode, and visual mode. 
+        </p>
+        <ul>
+            <li>An i keystroke enters insert mode, where all typed text becomes file content. Pressing Esc returns to command mode.</li>
+            <li>A v keystroke enters visual mode, where multiple characters might be selected for text manipulation. Use Shift+V for multiline and Ctrl+V for block selection. To exit the visual mode, use the v, Shift+V, or Ctrl+V keystrokes.</li>
+            <li>The : keystroke begins extended command mode for tasks such as writing the file (to save it) and quitting the Vim editor.</li>
+            <li>The u key undoes the most recent edit.</li>
+            <li>The x key deletes a single character.</li>
+            <li>The :w command writes (saves) the file and remains in command mode for more editing.</li>
+            <li>The :wq command writes (saves) the file and quits Vim.</li>
+            <li>The :q! command quits Vim, and discards all file changes since the last write.</li>
+        </ul>
+        <p>
+            In Vim, we can yank and put (copy and paste), by using the y and p command characters. Position the cursor on the first character to select, 
+            and then enter visual mode. Use the arrow keys to expand the visual selection. When ready, press y to yank the selection into memory. 
+            Position the cursor at the new location, and then press p to put the selection at the cursor.
+        </p>
+        <p>
+            Visual mode is useful to highlight and manipulate text in different lines and columns. 
+            We can enter various visual modes in Vim by using the following key combinations.
+        </p>
+        <ul>
+            <li>Character mode : v</li>
+            <li>Line mode : Shift+v</li>
+            <li>Block mode : Ctrl+v</li>
+        </ul>
+        <p>
+            The /etc/vimrc and ~/.vimrc configuration files alter the behavior of the vim editor for the entire system or for a specific user respectively. 
+            Within these configuration files, we can specify behavior such as the default tab spacing, syntax highlighting, color schemes, and more. 
+            Modifying the behavior of the vim editor is particularly useful when working with languages such as YAML, which have strict syntax requirements.
+        </p>
+        <p>
+            With the Bash shell, we can set shell variables to help to run commands or to modify the behavior of the shell. 
+            We can also export shell variables as environment variables, which are automatically copied to programs that are run from that shell.
+        </p>
+        <p>
+            Shell variables are unique to a particular shell session. If we have two terminal windows open, or two independent login sessions to the same remote server, 
+            then we are running two shells. Each shell has its own set of values for its shell variables.
+        </p>
+        <code>VARIABLENAME=value</code><br>
+        <code>echo $VARIABLENAME</code>
+        <p>
+            Some shell variables are set when Bash starts. We can modify them to adjust the shell's behavior.
+            For example, the HISTFILE, HISTFILESIZE, and HISTTIMEFORMAT shell variables affect the shell history and the history command. 
+            The HISTFILE variable specifies which file to save the shell history to, and defaults to the ~/.bash_history file. 
+            The HISTFILESIZE variable specifies how many commands to save in that file from the history. 
+            The HISTTIMEFORMAT variable defines the time stamp format for every command in the history.
+        </p>
+        <p>
+            The shell provides an environment for the programs that we run from that shell. 
+            Among other items, this environment includes information about the current working directory on the file system, 
+            the command-line options that are passed to the program, and the values of environment variables. 
+        </p>
+        <p>
+            If a shell variable is not an environment variable, then only the shell can use it. 
+            However, if a shell variable is an environment variable, then the shell and any programs that run from that shell can use the variable.
+        </p>
+        <p>
+            We can assign any variable that is defined in the shell as an environment variable by marking it for export with the export command.
+        </p>
+        <code>export EDITOR=vim</code>
+        <p>An important environment variable is PATH. The PATH variable contains a list of colon-separated directories that contain programs.</p>
+        <code>echo $PATH</code>
+        <p>
+            When We run a command such as the ls command, the shell looks for the ls executable file in each of those directories in order, 
+            and runs the first matching file that it finds. 
+        </p>
+        <p>
+            We can append directories to our PATH variable.
+        </p>
+        <code>export PATH=${PATH}:/home/user/sbin</code>
+        <p>
+            To list all the environment variables for a shell, run the env command
+        </p>
+        <p>
+            When Bash starts, several text files run with shell commands that initialize the shell environment. 
+            The exact scripts that run depend on whether the shell is interactive or non-interactive, and a login or non-login shell. 
+            A user directly enters commands into an interactive shell, whereas a non-interactive shell, such as a script, runs in the background without user intervention. 
+            A login shell is invoked when a user logs in locally via the terminal or remotely via the SSH protocol. 
+            A non-login shell is invoked from an existing session, such as to open a terminal from the GNOME GUI.
+        </p>
+        <p>
+            For interactive login shells, the /etc/profile and ~/.bash_profile files configure the Bash environment. 
+            The /etc/profile and ~/.bash_profile files also source the /etc/bashrc and ~/.bashrc files respectively. 
+            For interactive non-login shells, only the /etc/bashrc and ~/.bashrc files configure the Bash environment. 
+            Whereas the /etc/profile and /etc/bashrc files apply to the whole system, the ~/.bash_profile and ~/.bashrc files are user-specific. 
+            Non-interactive shells invoke any files that the BASH_ENV variable defines.
+        </p>
+        <p>
+            To create a variable that is available to all of our interactive shells, edit the ~/.bashrc file. 
+            To apply a variable only once after the user logs in, define it in the ~/.bash_profile file.
+        </p>
+        <p>
+            Bash aliases are shortcuts to other Bash commands. For example, if we must often type a long command, then we can create a shorter alias to invoke it. 
+            We use the alias command to create aliases. Add aliases to a user's ~/.bashrc file so they are available in any interactive shell.
+        </p>
+        <code>alias hello='echo "Hello, this is a long string."'</code>
+        <p>
+            To unset and unexport a variable, use the <code>unset</code> command
+        </p>
+        <p>
+            To unexport a variable without unsetting it, use the <code>export -n</code> command
+        </p>
+        <p>
+            To unset an alias, use the <code>unalias</code> command
+        </p>
     </div>
 </body>
 </html>
