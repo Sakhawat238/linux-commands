@@ -677,6 +677,10 @@
         </p>
         <code>chage -E $(date -d "+30 days" +%F) cloudadmin10</code>
         <p>
+            We can check the current password policy of a user using the following command
+        </p>
+        <code>chage -l username</code>
+        <p>
             We want the cloudadmin10 user to change the password on the next login, so we use the following command
         </p>
         <code>chage -d 0 cloudadmin10</code>
@@ -689,9 +693,11 @@
         </p>
         <p>
             We  can use the usermod command to modify account expiration for a user. 
-            For example, the usermod command -L option locks a user account and the user cannot log in to the system.
+            For example, the usermod command -L option locks a user account and the user cannot log in to the system. 
+            We an use -U option to unlock the user.
         </p>
-        <code>usermod -L sysadmin03</code>
+        <code>usermod -L sysadmin03</code><br>
+        <code>usermod -U sysadmin03</code>
         <p>
             In the following example, the usermod command locks and expires the cloudadmin10 user at 2023-09-14.
         </p>
@@ -706,6 +712,141 @@
             A common solution to this situation is to set the user's login shell to /sbin/nologin. If the user attempts to log in to the system directly, then the nologin shell closes the connection.
         </p>
         <code>usermod -s /sbin/nologin newapp</code>
+        <p>
+            File permissions control access to files. Files have three user categories that permissions apply to. 
+            We can set different permissions for the owning user (user permissions), the owning group (group permissions), 
+            and for all other users on the system that are not the user or a member of the owning group (other permissions).
+        </p>
+        <img src="./images/0007.png" alt="img" width="80%" />
+        <p>
+            Users normally have both read and execute permissions on read-only directories so that they can list the directory and have read-only access to all of its contents. 
+            If a user has only read access on a directory, then they can list the names of the files in it. However, the user cannot access other information, such as permissions or time stamps. 
+            If a user has only execute access on a directory, then they cannot list file names in the directory. If they know the name of a file that they have permission to read, 
+            then they can access the contents of that file from outside the directory by explicitly specifying the relative file name.
+        </p>
+        <p>
+            Anyone who owns or has write permissions to a directory can remove files on it, regardless of the ownership or permissions on the file itself. You can override this behavior by using the sticky bit permission.
+        </p>
+        <p>
+            The ls command -l option shows detailed information about permissions and ownership. 
+            Use the ls command -d option to show detailed information about a directory itself, and not its contents.
+        </p>
+        <p>
+            The first character of the long listing is the file type, and is interpreted as follows
+        </p>
+        <ul>
+            <li>- is a regular file</li>
+            <li>d is a directory</li>
+            <li>l is a symbolic link</li>
+            <li>c is a character device file</li>
+            <li>b is a block device file</li>
+            <li>p is a named pipe file</li>
+            <li>s is a local socket file</li>
+        </ul>
+        <p>
+            Use the chmod command to modify file and directory permissions.
+        </p>
+        <code>chmod Who/What/Which file|directory</code>
+        <ul>
+            <li>Who: u(user), g(group), o(other), a(all)</li>
+            <li>What: +(add), -(remove), =(set exactly)</li>
+            <li>Which: r(read), w(write), x(execute), X(special execute)</li>
+        </ul>
+        <p>
+            We can use the chmod command -R option to recursively set permissions on the files in an entire directory tree.
+        </p>
+        <code>chmod -R .....</code>
+        <p>
+            We can use the chmod command to change file permissions with the octal method instead of the symbolic method. 
+            With the octal method, we can represent permissions as a 3-digit (or 4-digit, when setting advanced permissions) octal number. 
+            4(read), 2(write), 1(execute).
+        </p>
+        <p>
+            Only the root user can change the user that owns a file. However, the file's owner and the root user can set group ownership. 
+            The root user can grant file ownership to any group, but only regular users can change the file's group ownership if they are a member of the destination group.
+        </p>
+        <p>
+            We can change file ownership by using the chown (change owner) command. 
+            The chown command -R option recursively changes the ownership of an entire directory tree. 
+            We can also use the chown command to change group ownership of a file by preceding the group name with a colon (:). 
+            We can use the chown command to change both owner and group at the same time by using the owner:group syntax.
+        </p>
+        <code>chown newuser filename</code><br>
+        <code>chwon -R newuser directoryname</code><br>
+        <code>chwon :newgroup file/directoryname</code><br>
+        <code>chwon newuser:newgroup file/directoryname</code>
+        <p>
+            Special permissions are a fourth permission type in addition to the user, group, and other types.
+        </p>
+        <img src="./images/0008.png" alt="img" width="80%" />
+        <p>
+            The setuid permission on an executable file means that commands run as the user that owns that file, 
+            rather than as the user that ran the command. One example is the passwd command
+        </p>
+        <code>ls -l /usr/bin/passwd</code>
+        <p>
+            In a long listing, we can identify the setuid permissions by a lowercase s character in the place where we would normally expect the x character (owner execute permissions). 
+            If the owner does not have execute permissions, then this character is replaced by an uppercase S character.
+        </p>
+        <p>
+            The setgid special permission on a directory means that created files in the directory inherit their group ownership from the directory, 
+            rather than inheriting group ownership from the creating user. This feature is commonly used on group collaborative directories 
+            to automatically change a file from the default private group to the shared group, or if a specific group should always own files in a directory. 
+            An example of this behavior is the /run/log/journal directory
+        </p>
+        <code>ls -ld /run/log/journal</code>
+        <p>
+            If setgid is set on an executable file, then commands run as the group that owns that file, rather than as the user that ran the command. 
+            This condition is similar to the way that setuid works. One example is the locate command
+        </p>
+        <code>ls -ld /usr/bin/locate</code>
+        <p>
+            In a long listing, we can identify the setgid permissions by a lowercase s character in the place where we would normally expect the x character (group execute permissions). 
+            If the group does not have execute permissions, then this character is replaced by an uppercase S character.
+        </p>
+        <p>
+            Finally, the sticky bit for a directory sets a special restriction on deletion of files. 
+            Only the owner of the file (and the root user) can delete files within the directory. An example is the /tmp directory
+        </p>
+        <code>ls -ld /tmp</code>
+        <p>
+            Setting Special Permissions
+        </p>
+        <ul>
+            <li>Symbolic : setuid = u+s; setgid = g+s; sticky = o+t</li>
+            <li>Octal : In the added fourth preceding digit; setuid = 4; setgid = 2; sticky = 1</li>
+        </ul>
+        <p>
+            Set the setgid bit and add read, write, and execute permissions for user and group, with no access for others, on the example directory by using the octal method
+        </p>
+        <code>chmod 2770 example</code>
+        <p>
+            Remove the setgid bit and add read, write, and execute permissions for user and group, with no access for others, on the example directory by using the octal method
+        </p>
+        <code>chmod 0770 example</code>
+        <p>
+            On creation, a file is assigned initial permissions. Two factors affect these initial permissions. 
+            The first is whether we are creating a regular file or a directory. 
+            The second is the current umask, which stands for user file-creation mask.
+        </p>
+        <p>
+            If we create a directory, then its initial octal permissions are 0777 (drwxrwxrwx). If we create a regular file, then its initial octal permissions are 0666 (-rw-rw-rw-). 
+            We must always explicitly add execute permission to a regular file. 
+        </p>
+        <p>
+            Additionally, the shell session sets a umask to further restrict the initial permissions of a file. The umask is an octal bitmask that clears the permissions of new files and directories that a process creates. 
+            If a bit is set in the umask, then the corresponding permission is cleared on new files. For example, the umask 0002 clears the write bit for other users. 
+            The leading zeros indicate that the special, user, and group permissions are not cleared. A umask of 0077 clears all the group and other permissions of newly created files.
+        </p>
+        <p>
+            The umask command without arguments displays the current value of the shell's umask
+        </p>
+        <code>umask</code>
+        <p>
+            Use the umask command with a single octal argument to change the umask of the current shell. The argument should be an octal value that corresponds to the new umask value. 
+            We can omit any leading zeros in the umask. For example, umask 077 is the same as umask 0077. 
+            The system's default umask values for Bash shell users are defined in the /etc/login.defs file, and in the /etc/bashrc file.
+        </p>
     </div>
 </body>
 </html>
