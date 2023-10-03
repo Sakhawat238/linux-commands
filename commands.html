@@ -847,6 +847,227 @@
             We can omit any leading zeros in the umask. For example, umask 077 is the same as umask 0077. 
             The system's default umask values for Bash shell users are defined in the /etc/login.defs file, and in the /etc/bashrc file.
         </p>
+        <p>
+            A process is a running instance of a launched, executable program. From the moment that a process is created, it consists of the following items
+        </p>
+        <ul>
+            <li>An address space of allocated memory</li>
+            <li>Security properties, including ownership credentials and privileges</li>
+            <li>One or more execution threads of program code</li>
+            <li>A process state</li>
+        </ul>
+        <p>
+            The environment of a process is a list of information that includes the following items
+        </p>
+        <ul>
+            <li>Local and global variables</li>
+            <li>A current scheduling context</li>
+            <li>Allocated system resources, such as file descriptors and network ports</li>
+        </ul>
+        <p>
+            An existing parent process duplicates its own address space, which is known as a process fork, to create a child process structure. 
+            Every new process is assigned a unique process ID (PID) for tracking and security purposes. The PID and the parent's process ID (PPID) are elements of the new process environment. 
+            Any process can create a child process. All processes are descendants of the first system process, systemd, on a Red Hat system.
+        </p>
+        <p>
+            Normally, a parent process sleeps when the child process runs, and sets a wait request to be signaled when the child completes. 
+            After the child process exits, it closes or discards its resources and environment, and leaves a zombie resource, which is an entry in the process table. 
+            The parent, which is signaled to wake when the child exits, cleans the process table of the child's entry, and it frees the last resource of the child process. 
+            The parent process then continues with its own program code execution.
+        </p>
+        <p>
+            The following diagram and table describe Linux process states in detail.
+        </p>
+        <img src="./images/0009.png" alt="img" width="70%" />
+        <img src="./images/0010.png" alt="img" width="70%" />
+        <p>
+            The system assigns a state to every new process. The S column of the top command or the STAT column of the ps command shows the state of each process. 
+            We can use the ps command --forest option to display the processes in a tree format so you can view relationships between parent and child processes.
+        </p>
+        <code>top</code><br>
+        <code>ps aux</code><br>
+        <code>ps lax</code><br>
+        <code>ps -ef</code><br>
+        <code>ps --forest</code>
+        <p>
+            A job is associated with each pipeline that is entered at a shell prompt. All processes in that pipeline are part of the job and are members of the same process group. 
+            We can consider a minimal pipeline to be only one command that is entered in the shell prompt to create a job with only one member.
+        </p>
+        <p>
+            Only one job at a time can read input and keyboard-generated signals from a particular terminal window. 
+            Processes that are part of that job are foreground processes of that controlling terminal.
+        </p>
+        <p>
+            A background process of that controlling terminal is any other job that is associated with that terminal. 
+            Background processes of a terminal cannot read input or receive keyboard-generated interrupts from the terminal, but can write to the terminal. 
+        </p>
+        <p>
+            Each terminal runs in its own session, and can have a foreground process and any number of background processes. 
+            A job that runs in its own session belongs to its controlling terminal.
+        </p>
+        <p>
+            Some processes, such as system daemons, are started by the system and not from a controlling terminal. 
+            These processes are not members of a job, and cannot be brought to the foreground. 
+            The ps command displays a question mark (?) in the TTY column for these processes.
+        </p>
+        <p>
+            Any command or pipeline can be started in the background by appending an ampersand (&) character to the command. 
+            The Bash shell displays a job number (unique to the session) and the PID of the new child process.
+        </p>
+        <code>sleep 10000 &</code>
+        <p>
+            When a command line with a pipe (|) is sent to the background, the PID of the last command in the pipeline is displayed.
+        </p>
+        <code>example_command | sort | mail -s "Sort output" &</code>
+        <p>
+            Use the jobs command to display the list of jobs for the shell's session.
+        </p>
+        <code>jobs</code>
+        <p>
+            Use the fg command to bring a background job to the foreground. Use the (%jobNumber) format to specify the process to foreground.
+        </p>
+        <code>fg %1</code>
+        <p>
+            To send a foreground process to the background, press the keyboard-generated suspend request (Ctrl+z) in the terminal. The job is placed in the background and suspended.
+        </p>
+        <p>
+            Use the bg command with the job ID to start running the suspended process.
+        </p>
+        <code>bg %1</code>
+        <p>
+            The ps j command displays information about jobs. Use the ps j command to find process and session information.
+        </p>
+        <ul>
+            <li>The PID is the unique process ID of the process.</li>
+            <li>The PPID is the PID of the parent process of this process, the process that started (forked) it.</li>
+            <li>The PGID is the PID of the process group leader, normally the first process in the job's pipeline.</li>
+            <li>The SID is the PID of the session leader, which (for a job) is normally the interactive shell that is running on its controlling terminal.</li>
+        </ul>
+        <p>
+            The shell warns a user who attempts to exit a terminal window (session) with suspended jobs. 
+            If the user tries again to exit immediately, then the suspended jobs are killed.
+        </p>
+        <p>
+            A signal is a software interrupt that is delivered to a process. The following table lists the fundamental signals that system administrators use for routine process management. 
+            Refer to signals by their short (HUP) or proper (SIGHUP) name.
+        </p>
+        <img src="./images/0011.png" alt="img" width="70%" />
+        <p>
+            Each signal has a default action, which is usually one of the following actions
+        </p>
+        <ul>
+            <li>Term : Terminate a program (exit) immediately.</li>
+            <li>Core : Save a program's memory image (core dump), and then terminate.</li>
+            <li>Stop : Stop a running program (suspend) and wait to continue (resume).</li>
+        </ul>
+        <p>
+            Programs react to the expected event signals by implementing handler routines to ignore, replace, or extend a signal's default action.
+        </p>
+        <p>
+            We can signal the current foreground process by pressing a keyboard control sequence to suspend (Ctrl+z), kill (Ctrl+c), or core dump (Ctrl+\) the process. 
+            However, we might use signal-sending commands to send signals to background processes in a different session.
+        </p>
+        <p>
+            The kill command uses a PID number to send a signal to a process. 
+            Despite its name, we can use the kill command to send any signal, not just those signals for terminating programs. 
+            We can use the kill command -l option to list the names and numbers of all available signals.
+        </p>
+        <code>kill -l</code><br>
+        <code>kill 5194</code><br>
+        <code>kill -9 5194</code><br>
+        <code>kill -SIGTERM 5194</code>
+        <p>
+            To terminate all processes for one user, use the pkill command. Use the pgrep command with the -l option to list the process names and IDs. 
+            Then kill all of a user's processes and login shells using the SIGKILL signal.
+        </p>
+        <code>pgrep -l -u username</code><br>
+        <code>pkill -SIGKILL -u username</code>
+        <p>
+            When processes that require attention are in the same login session, killing all of a user's processes might not be needed. 
+            Use the w command to determine the controlling terminal for the session, and then kill only the processes that reference the same terminal ID.
+        </p>
+        <code>w -u username</code><br>
+        <code>pkill -t terminalname</code><br>
+        <code>pkill -SIGKILL -t terminalname</code>
+        <p>
+            Administrators commonly use SIGKILL. It is always fatal, because the SIGKILL signal cannot be handled or ignored. 
+            However, it forces termination without allowing the killed process to run self-cleanup routines. 
+            Red Hat recommends sending SIGTERM first, and then trying SIGINT; and only if both fail, trying again with SIGKILL.
+        </p>
+        <p>
+            Use the pstree command to view a process tree for the system or a single user. Use the parent process's PID to kill all children that it created. 
+        </p>
+        <code>pstree -p username</code><br>
+        <code>pkill -P parentpid</code><br>
+        <code>pkill -SIGKILL -P parentpid</code>
+        <p>
+            To terminate background jobs, use the kill command and specify the job number.
+        </p>
+        <code>kill -SIGTERM %jobnumber</code>
+        <p>
+            We might need to log out other users for various reasons. We must terminate their session by using signals administratively.
+        </p>
+        <p>
+            First, to log off a user, identify the login session to be terminated. Use the w command to list user logins and currently running processes. 
+            Note the TTY and FROM columns to determine the closing sessions.
+        </p>
+        <p>
+            All user login sessions are associated with a terminal device (TTY). 
+            If the device name is pts/N, then it is a pseudo-terminal that is associated with a graphical terminal window or a remote login session. 
+            If it is ttyN, then the user is on a system console, an alternative console, or another directly connected terminal device.
+        </p>
+        <p>
+            Load average is a measurement that the Linux kernel provides, to represent the perceived system load for a period of time. 
+            The kernel collects the current load number every five seconds based on the number of processes in runnable and uninterruptible states. 
+            This number is accumulated and reported as an exponential moving average over the most recent 1, 5, and 15 minutes.
+        </p>
+        <p>
+            The uptime command is one way to display the current load average. 
+            It prints the current time, how long the machine has been up, how many user sessions are running, and the current load average.
+        </p>
+        <code>uptime</code>
+        <p>
+            The three values for the load average represent the load over the last 1, 5, and 15 minutes. 
+            It indicates whether the system load appears to be increasing or decreasing.
+        </p>
+        <p>
+            Use the lscpu command to determine the number of CPUs on a system.
+        </p>
+        <code>lscpu</code>
+        <p>
+            Imagine that the only contribution to the load number is from processes that need CPU time. 
+            Then we can divide the displayed load average values by the number of logical CPUs in the system. 
+            A value below 1 indicates adequate resource use and minimal wait times. 
+            A value above 1 indicates resource saturation and some processing delay.
+        </p>
+        <img src="./images/0012.png" alt="img" width="100%" />
+        <p>
+            However, processes that are uninterruptibly sleeping for critical I/O due to a busy disk or network resource are also included in the count and increase the load average. 
+            Although not indicating CPU use, these processes are added to the queue count, because they wait for resources and cannot run on a CPU until they get the resources. 
+            This metric is still considered as system load due to resource limitations that cause processes not to run.
+        </p>
+        <p>
+            The top command displays a dynamic view of the system's processes and a summary header followed by a process or thread list. 
+            The default top output columns are as follows
+        </p>
+        <ul>
+            <li>The process ID (PID)</li>
+            <li>The process owner username (USER)</li>
+            <li>Virtual memory (VIRT) is all the memory that the process uses, including the resident set, shared libraries, and any mapped or swapped memory pages</li>
+            <li>Resident memory (RES) is the physical memory that the process uses, including any resident, shared objects (labeled RSS in the ps command)</li>
+            <li>
+                Process state (S) can be one of the following states:
+                <ul>
+                    <li>D = Uninterruptible Sleeping</li>
+                    <li>R = Running or Runnable</li>
+                    <li>S = Sleeping</li>
+                    <li>T = Stopped or Traced</li>
+                    <li>Z = Zombie</li>
+                </ul>
+            </li>
+            <li>CPU time (TIME) is the total processing time since the process started.</li>
+            <li>The process command name (COMMAND).</li>
+        </ul>
     </div>
 </body>
 </html>
