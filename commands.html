@@ -1199,6 +1199,101 @@
             we can execute both the systemctl start and systemctl enable commands, or use the equivalent systemctl enable --now command.
         </p>
         <code>systemctl enable --now sshd.service</code>
+        <p>
+            SSH secures communication through public-key encryption. 
+            When an SSH client connects to an SSH server, the server sends a copy of its public key to the client before logging in. 
+            When a user runs the ssh command for connecting to an SSH server, the command checks for a copy of the server's public key in its local known hosts file. 
+            The key might be preconfigured in the /etc/ssh/ssh_known_hosts file, or the user might have the ~/.ssh/known_hosts file that contains the key in their home directory.
+        </p>
+        <p>
+            The StrictHostKeyChecking parameter is set in the user-specific ~/.ssh/config file, 
+            or in the system-wide /etc/ssh/ssh_config file, or by specifying the -o StrictHostKeyChecking= option of the ssh command.
+        </p>
+        <ul>
+            <li>If the StrictHostKeyChecking parameter is set to yes, then the ssh command always aborts the SSH connection if the public keys do not match.</li>
+            <li>If the StrictHostKeyChecking parameter is set to no, then the ssh command enables the connection and adds the key of the target host to the ~/.ssh/known_hosts file.</li>
+        </ul>
+        <p>
+            We can verify the fingerprint of the target server's SSH host key by using the ssh-keygen command on the target server. 
+            The ssh-keygen command displays the key fingerprint so that we can match it to the output of the ssh command and verify that the key is valid. 
+            Use the -lf options to list the public key fingerprint in the host's default public key file. 
+        </p>
+        <p>
+            If the IP address or the public key of the remote system changes, and you try to connect to that system again via SSH, 
+            then the SSH client detects that the key entry for that system in the ~/.ssh/known_hosts file is no longer valid. 
+            A warning message states that the remote host identification changed, and that you must modify the key entry.
+        </p>
+        <p>
+            If we know why the key changed, such as an IP address change, then resolve this problem by removing the relevant key entry from the ~/.ssh/known_hosts file, 
+            and then reconnect to the system to receive the new key entry. We can also find and remove the relevant key entry by running the following command
+        </p>
+        <code>ssh-keygen -R remotesystemname -f ~/.ssh/known_hosts</code>
+        <p>
+            We can configure our account for passwordless access to SSH servers that enabled key-based authentication, which is based on public key encryption (PKI).
+        </p>
+        <p>
+            To prepare our account, generate a cryptographically related pair of key files. One key is private and held only by us. 
+            The second key is our related public key, which is not secret. The private key acts as our authentication credential, and it must be stored securely. 
+            The public key is copied to our account on servers that we will remotely access, and verifies our use of our private key.
+        </p>
+        <p>
+            When we log in to our account on a remote server, the remote server uses our public key to encrypt a challenge message and send it to our SSH client. 
+            Our SSH client must then prove that it can decrypt this message, which demonstrates that we have the associated private key. 
+            If this verification succeeds, then our request is trusted, and we are granted access without giving a password.
+        </p>
+        <p>
+            We can use the ssh-keygen command to create a key pair. By default, the ssh-keygen command saves our private and public keys in 
+            the ~/.ssh/id_rsa and ~/.ssh/id_rsa.pub files, but we can specify a different name.
+        </p>
+        <code>ssh-keygen</code>
+        <p>
+            We can choose to provide a passphrase to ssh-keygen, which is used to encrypt our private key. Using a passphrase is recommended, 
+            so that our private key cannot be used by someone to access it. If we set a passphrase, then we must enter the passphrase each time that we use the private key. 
+            The passphrase is used locally to decrypt our private key before use, unlike our password, which must be sent in clear text across the network for use.
+        </p>
+        <code>ssh-keygen -f .ssh/key-with-pass</code>
+        <p>
+            The ssh-keygen command -f option specifies the files to save the keys in. 
+            In the preceding example, the ssh-keygen command saved the key pair in the /home/user/.ssh/key-with-pass and /home/user/.ssh/key-with-pass.pub files.
+        </p>
+        <p>
+            The ssh-copy-id command copies the public key of the SSH key pair to the remote system. 
+            We can specify a specific public key with the ssh-copy-id command, or use the default ~/.ssh/id_rsa.pub file.
+        </p>
+        <code>ssh-copy-id -i .ssh/key-with-pass.pub user@remotehost</code><br>
+        <code>ssh -i .ssh/key-with-pass user@remotehost</code>
+        <p>
+            The ssh command provides three verbosity levels with the -v, -vv, and -vvv options, 
+            which respectively provide increasing debugging information during ssh command use.
+        </p>
+        <code>ssh -v user@remotehost</code>
+        <p>
+            We can create the ~/.ssh/config file to preconfigure SSH connections. 
+            Within the configuration file, we can specify connection parameters such as users, keys, and ports for specific hosts. 
+            This file eliminates the need to manually specify command parameters each time that we connect to a host.
+        </p>
+        <p>
+            The sshd daemon provides the OpenSSH service. We can configure the service by editing the /etc/ssh/sshd_config file.
+        </p>
+        <p>
+            The default configuration of the OpenSSH server works well for many use cases. 
+            However, we might want to prohibit direct remote login to the root account, and we might want to prohibit password-based authentication (in favor of SSH private key authentication).
+        </p>
+        <p>
+            The OpenSSH server uses the PermitRootLogin configuration setting in the /etc/ssh/sshd_config file to allow or prohibit users to log in to the system as the root user
+        </p>
+        <p>
+            If the PermitRootLogin parameter is set to the yes value, then anyone can log in as the root user remotely. 
+            To prevent this situation, set the value to no. Alternatively, to prevent password-based authentication 
+            but to allow private key-based authentication for root, set the PermitRootLogin parameter to without-password.
+        </p>
+        <p>
+            The SSH server (sshd) must be reloaded to apply any changes.
+        </p>
+        <code>systemctl reload sshd</code>
+        <p>
+            The OpenSSH server uses the PasswordAuthentication parameter in the /etc/ssh/sshd_config file to control whether users can use password-based authentication to log in to the system.
+        </p>
     </div>
 </body>
 </html>
