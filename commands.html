@@ -6,7 +6,7 @@
     <title>Linux Commands</title>
 </head>
 <body style="display: flex; justify-content: center;">
-    <div style="width: 75%; background-color: linen; padding: 15px;">
+    <div style="width: 75%; background-color: #f5f5f5; padding: 15px;">
         <p>
             The GNU Bourne-Again Shell (bash) is a program that interprets commands that the user types. 
             Each string that is typed into the shell can have up to three parts: the command, options 
@@ -1294,6 +1294,251 @@
         <p>
             The OpenSSH server uses the PasswordAuthentication parameter in the /etc/ssh/sshd_config file to control whether users can use password-based authentication to log in to the system.
         </p>
+        <p>
+            The TCP/IP network model is a four-layered set of communication protocols that describes 
+            how data communications are packetized, addressed, transmitted, routed, and received between computers over a network.
+        </p>
+        <img src="./images/0013.png" alt="img" width="60%" />
+        <p>
+            An IPv4 address is a 32-bit number, which is expressed as four 8-bit octets in a decimal format that ranges in value from 0 to 255, separated by single dots. 
+            The address is divided into two parts: the network prefix and the host number. The network prefix identifies a unique physical or virtual subnet. 
+            The host number identifies a specific host on the subnet. All hosts on the same subnet have the same network prefix and can talk to each other directly without a router. 
+            A network gateway connects different networks, and a network router commonly operates as the gateway for a subnet.
+        </p>
+        <p>
+            In the original IPv4 specification, the allowed network prefixes were one of three fixed sizes for unicast packets that have a single source and destination. 
+            The network prefix might be 8 bits (class A), 16 bits (class B), or 24 bits (class C). 
+            Today, the number of bits in the network prefix is variable, which means that the prefix can be any number in the supported range, 
+            and this later specification is called Classless Inter-Domain Routing (CIDR). 
+        </p>
+        <p>
+            A network mask (netmask) is a binary mask whose length indicates how many bits belong to the network prefix that identifies the subnet. 
+            Because an IPv4 address is always 32 bits long, a subnet with a longer network mask has fewer available bits to identify hosts, which means fewer possible hosts. 
+            A subnet with a shorter network mask has more available bits to identify hosts, which means more possible hosts and a larger subnet.
+        </p>
+        <p>
+            Network masks are expressed in one of two forms, which are both used routinely. 
+            The first form, which is known as CIDR notation, appends a forward slash (/) and an integer up to 32 that indicates the number of bits in the binary mask. 
+            The second notation displays the number of bits in the binary mask as four 8-bit octets in decimal format.
+        </p>
+        <p>
+            The number of available host addresses in a subnet depends on the network prefix size. 
+            For example, a network prefix of /24 leaves 8 bits, or 255 possible host addresses in the subnet. 
+            A network prefix of /16 leaves 16 bits, or 65536 possible host addresses in the subnet.
+        </p>
+        <img src="./images/0014.png" alt="img" width="50%" />
+        <p>
+            A server can automatically configure its IPv4 network settings by communicating with a DHCP server. 
+            A local DHCP client queries the subnet by using a link layer protocol to locate a DHCP server or proxy, 
+            and negotiates to use a unique address and other settings for a specific lease period. 
+            The client must periodically request lease renewal to maintain use of the assigned network configuration.
+        </p>
+        <p>
+            An IPv6 address is a 128-bit number, which is normally expressed as eight colon-separated groups of four hexadecimal nibbles (half-bytes). 
+            Each nibble represents four bits of the IPv6 address, so each group represents 16 bits of the IPv6 address.
+        </p>
+        <code>2001:0db8:0000:0010:0000:0000:0000:0001</code>
+        <p>
+            To simplify writing IPv6 addresses, leading zeros in a colon-separated group are not needed. 
+            However, at least one hexadecimal digit must be written in each colon-separated group.
+        </p>
+        <code>2001:db8:0:10:0:0:0:1</code>
+        <p>
+            Because addresses with long strings of zeros are common, one or more consecutive groups of zeros 
+            only can be combined with exactly one block of two colon :: characters.
+        </p>
+        <code>2001:db8:0:10::1</code>
+        <p>
+            A normal IPv6 unicast address is divided into two parts: the network prefix and interface ID. 
+            The network prefix identifies the subnet. Two network interfaces on the same subnet cannot have the same interface ID; 
+            the interface ID identifies a particular interface on the subnet.
+        </p>
+        <p>
+            Unlike IPv4, IPv6 has a standard subnet mask, /64, which is used for almost all normal addresses. 
+            In this case, half of the 128 bit address is the network prefix and the other half is the interface ID. 
+            With 64 bits for host addresses, a single subnet could theoretically contain 2^64 hosts.
+        </p>
+        <p>
+            Typically, the network provider allocates a shorter prefix to an organization, such as a /48. 
+            This prefix leaves the rest of the network part for assigning subnets (up to the maximum /64 length) from that allocated prefix. 
+            For example, when a /48 allocation prefix is assigned, 16 bits are available for up to 65536 subnets.
+        </p>
+        <p>
+            IPv6 supports manual configuration, and two methods of dynamic configuration, one of which is DHCPv6. 
+            In IPv4, two addresses on a network cannot be used: the lowest address, which is the network address; 
+            and the highest address, which is the broadcast address. 
+            In IPv6, two interface IDs are reserved, and cannot be used as normal host interface addresses
+        </p>
+        <ul>
+            <li>
+                The all-zeros identifier 0000:0000:0000:0000 ("subnet router anycast") that all routers on the link use. 
+                For example, on the 2001:db8::/64 network, the anycast address is 2001:db8::
+            </li>
+            <li>The identifiers fdff:ffff:ffff:ff80 through fdff:ffff:ffff:ffff</li>
+        </ul>
+        <p>
+            IP addresses are not human-friendly in daily use. Users generally prefer to work with hostnames rather than with number strings. 
+            Linux has name resolution mechanisms to map a hostname to an IP address.
+        </p>
+        <p>
+            One method is to create static entries for each hostname in each system's /etc/hosts file. 
+            With this method, we must manually update each server's copy of the hosts file.
+        </p>
+        <p>
+            When configured, we can look up the address for a hostname (or a hostname from an address) by using the Domain Name System (DNS) network service. 
+            DNS is a distributed network of servers that provides name resolution mappings. For name resolution to work, a host must be configured to know where to contact a nameserver. 
+            The nameserver does not need to be on the same subnet, but the host must be able to reach it. 
+            A nameserver configuration is typically obtained through DHCP or by creating static address settings in the /etc/resolv.conf file.
+        </p>
+        <p>
+            The ip link command lists all available network interfaces on our system.
+        </p>
+        <code>ip link show</code>
+        <p>
+            Use the ip command to view device and address information. A single network interface can have multiple IPv4 or IPv6 addresses.
+        </p>
+        <code>ip addr show ens3</code>
+        <p>
+            The ip command can also show statistics about network performance.
+        </p>
+        <code>ip -s link show ens3</code>
+        <p>
+            The ping command tests connectivity. The command continues to run until Ctrl+c is pressed, 
+            unless options are given to limit the number of sent packets.
+        </p>
+        <code>ping -c3 192.0.2.254</code>
+        <p>
+            The ping6 command is the IPv6 version of the ping command in Red Hat Enterprise Linux.
+        </p>
+        <code>ping6 2001:db8:0:1::1</code>
+        <p>
+            Use the ip command route option to show routing information.
+        </p>
+        <code>ip route</code>
+        <p>
+            Use the ip command -6 option to show the IPv6 routing table.
+        </p>
+        <code>ip -6 route</code>
+        <p>
+            To trace the network traffic path to reach a remote host through multiple routers, use either the traceroute or the tracepath command.
+        </p>
+        <code>tracepath access.redhat.com</code>
+        <p>
+            The tracepath6 and traceroute -6 commands are the equivalent IPv6 commands to the tracepath and traceroute commands.
+        </p>
+        <code>tracepath6 2001:db8:0:2::451</code>
+        <p>
+            TCP services use sockets as endpoints for communication, and are composed of an IP address, protocol, and port number. 
+            Services typically listen on standard ports, whereas clients use a random available port. 
+            Well-known names for standard ports are listed in the /etc/services file. The ss command is used to display socket statistics.
+        </p>
+        <code>ss -ta</code>
+        <p></p>
+        <img src="./images/0015.png" alt="img" width="80%" />
+        <p>
+            The NetworkManager service monitors and manages a system's network settings. 
+            Service configuration files are stored in the /etc/NetworkManager/system-connections/ directory.
+        </p>
+        <p>
+            The NetworkManager service manages network devices and connections. A device is a physical or virtual network interface that provides for network traffic. 
+            A connection has related configuration settings for a single network device. A connection can also be known as a network profile. 
+            Each connection must have a unique name or ID, which can match the device name that it configures.
+        </p>
+        <p>
+            Use the nmcli utility to create and edit connection files from the command line. 
+            The nmcli device status command displays the status of all network devices
+        </p>
+        <code>nmcli dev status</code>
+        <p>
+            The nmcli connection show command displays a list of all connections. Use the --active option to list only active connections.
+        </p>
+        <code>nmcli con show</code>
+        <code>nmcli con show --active</code>
+        <p>
+            Use the nmcli connection add command to add network connections. 
+            The data for the added network connection is stored in the /etc/NetworkManager/system-connections/ directory as a file with a .nmconnection suffix.
+        </p>
+        <code>nmcli con add con-name eno2 type ethernet ifname eno2</code>
+        <p>
+            The next example creates an eno3 connection of the ethernet type for the eno3 network interface with a static IPv4 network setting. 
+            This command configures the 192.168.0.5 IP address with a network prefix of /24 and a network gateway of 192.168.0.254. 
+            The nmcli connection add command fails if the connection name that we try to add exists.
+        </p>
+        <code>nmcli con add con-name eno3 type ethernet ifname eno3 ipv4.method manual ipv4.addresses 192.168.0.5/24 ipv4.gateway 192.168.0.254</code>
+        <p>
+            The next example creates an eno4 connection for the eno4 device with static IPv6 and IPv4 addresses. 
+            This command configures the 2001:db8:0:1::c000:207 IPv6 address with the /64 network prefix and the 2001:db8:0:1::1 address as the default gateway. 
+            The command also configures the 192.0.2.7 IPv4 address with the /24 network prefix and the 192.0.2.1 address as the default gateway.
+        </p>
+        <code>nmcli con add con-name eno4 type ethernet ifname eno4 ipv6.addresses 2001:db8:0:1::c000:207/64 ipv6.gateway 2001:db8:0:1::1 
+            ipv6.method manual ipv4.addresses 192.0.2.7/24 ipv4.gateway 192.0.2.1 ipv4.method manual
+        </code>
+        <p>
+            The nmcli connection up command activates a network connection on the device that it is bound to. 
+            Activating a network connection requires the connection name, not the device name.
+        </p>
+        <code>nmcli con up static-ens3</code>
+        <p>
+            The nmcli device disconnect command disconnects the network device and brings down the connection.
+        </p>
+        <code>nmcli dev disconnect ens3</code>
+        <p>
+            NetworkManager service connections have two setting types. Static connection properties are configured by the administrator 
+            and stored in the /etc/NetworkManager/system-connections/*.nmconnection configuration files. 
+            Dynamic connection properties are requested from a DHCP server and are not stored persistently.
+        </p>
+        <p>
+            To list the current settings for a connection, use the nmcli connection show command. 
+            Settings in lowercase are static properties that the administrator can change. 
+            Settings in uppercase are active settings in temporary use for this connection instance.
+        </p>
+        <code>nmcli con show static-ens3</code>
+        <p>
+            Use the nmcli connection modify command to update connection settings. 
+            These changes are saved in the /etc/NetworkManager/system-connections/name.nmconnection file. 
+            Consult the nm-settings(5) man page for the available settings.
+        </p>
+        <p>
+            Use the following command to update the static-ens3 connection to set the 192.0.2.2/24 IPv4 address and the 192.0.2.254 default gateway. 
+            Use the nmcli command connection.autoconnect parameter to automatically enable or disable the connection at system boot.
+        </p>
+        <code>nmcli con mod static-ens3 ipv4.addresses 192.0.2.2/24 ipv4.gateway 192.0.2.254 connection.autoconnect yes</code>
+        <p>
+            Use the following command to update the static-ens3 connection to set the 2001:db8:0:1::a00:1/64 IPv6 address and the 2001:db8:0:1::1 default gateway.
+        </p>
+        <code>nmcli con mod static-ens3 ipv6.addresses 2001:db8:0:1::a00:1/64 ipv6.gateway 2001:db8:0:1::1</code>
+        <p>
+            Some settings can have multiple values. A specific value can be added to the list or deleted from the connection settings by adding a plus (+) or minus (-) symbol to the start of the setting name. 
+            If a plus or minus is not included, then the specified value replaces the setting's current list. 
+            The following example adds the 2.2.2.2 DNS server to the static-ens3 connection.
+        </p>
+        <code>nmcli con mod static-ens3 +ipv4.dns 2.2.2.2</code>
+        <p>
+            We can also modify network profiles by editing the connection's configuration file in /etc/NetworkManager/system-connections/. 
+            Whereas nmcli commands communicate directly with NetworkManager to implement modifications immediately, 
+            connection file edits are not implemented until NetworkManager is asked to reload the configuration file. 
+        </p>
+        <p>
+            The following example loads all connection profiles.
+        </p>
+        <code>nmcli con reload</code>
+        <p>
+            The next example loads only the eno2 connection profile at /etc/NetworkManager/system-connections/eno2.nmconnection.
+        </p>
+        <code>nmcli con reload eno2</code>
+        <p>
+            The nmcli connection delete command deletes a connection from the system. 
+            This command disconnects the device and removes the connection configuration file
+        </p>
+        <code>nmcli con del static-ens3</code>
+        <p>
+            Network configurations are stored in the /etc/NetworkManager/system-connections/ directory. 
+            The NetworkManager uses the INI-style key format for storing network connection profiles. 
+            The key-value pairs store configurations as sections (groups). 
+            Each configuration key/value pair in the section is one of the listed properties in the settings specification.
+        </p>
+        <img src="./images/0016.png" alt="img" width="70%" />
+        
     </div>
 </body>
 </html>
